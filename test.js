@@ -1,4 +1,6 @@
-//this is a test
+// jquey method for Internal Standard Introduction
+//test
+//栈操作
 function pushStack(elems){
 	var ret = JQuery.merge(this.constructor(),elems);
 		ret.prevObject = this;
@@ -6,8 +8,9 @@ function pushStack(elems){
 		return ret;
 }
 //merge
+//伪数组 数组{0：a,1:b,length:2}
 function merge(first,second){
-	
+		
 		var l = second.length,
 			i = first.length,
 			j = 0;
@@ -17,7 +20,7 @@ function merge(first,second){
 				first[ i++ ] = second[ j ];
 			}
 		} else {
-			//内部使用
+			//内部使用 
 			while ( second[j] !== undefined ) {
 				first[ i++ ] = second[ j++ ];
 			}

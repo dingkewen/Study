@@ -5,3 +5,7 @@ function pushStack(elems){
 		ret.context = this.context;
 		return ret;
 }
+//merge
+function merge(){
+	
+}

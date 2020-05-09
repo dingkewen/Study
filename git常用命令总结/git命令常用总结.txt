@@ -12,7 +12,9 @@ git diff <file> //比较文件的不同
 git log（--pretty=oneline）//提交日志
 git reset --hard HEAD^（或具体版本号）//回退到上个版本
 git reflog //记录每次的命令
-git checkout -- <file>//没有-就切换分支了 撤回修改文件 在暂存区时git reset HEAD <file>
+
+git checkout -- <file>//没有--就切换分支了 撤回修改文件 在暂存区时git reset HEAD <file>
+
 rm file//删除文件 没有添加到暂存区
 git rm file //从版本库中删掉
 

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>dot</title>
+	<script src="./lib/webgl-utils.js"></script>
+	<script src="./lib/webgl-debug.js"></script>
+	<script src="./lib/cuon-utils.js"></script>
+	<script src="./lib/cuon-matrix.js"></script>
+</head>
+<body onload="main()">
+	<canvas id="webgl" width="400" height="400"></canvas>
+</body>
+<script>
+	// 顶点着色器
+	var vshader_source = `
+		attribute vec4 a_Position;
+		attribute vec2 a_Texcoord;
+
+		varying vec2 v_Texcoord;
+		void main() {
+			gl_Position = a_Position;
+			v_Texcoord = a_Texcoord;
+		}
+	`;
+	// 片元着色器
+	var fshader_source = `
+		precision mediump float;
+
+		uniform sampler2D u_Sampler;	// s轴
+		varying vec2 v_Texcoord;		// t轴
+		void main() {
+			gl_FragColor = texture2D(u_Sampler, v_Texcoord);
+		}
+	`;
+	function main() {
+		var canvas = document.getElementById('webgl');
+		var gl = getWebGLContext(canvas);
+		// 初始化着色器
+		if (!initShaders(gl, vshader_source, fshader_source)) {
+			console.log('fail');
+		}
+		var n = initVertexBuffer(gl);
+
+		// 初始化纹理对象
+		if (!initTexture(gl, n)) {
+			console.log('err');
+		}
+
+		gl.clearColor(0,1,1,1);
+		gl.clear(gl.COLOR_BUFFER_BIT);
+	}
+	function initVertexBuffer(gl) {
+		var vertices = new Float32Array([
+			-0.5, 0.5, 0, 1.0, 
+			-0.5, -0.5, 0.0, 0.0, 
+			0.5, 0.5, 1.0, 1.0, 
+			0.5, -0.5, 1.0, 0.0, 
+		])
+		var n = 4;
+		// createBuffer
+		var vertexBuffer = gl.createBuffer();
+		// bindBuffer
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+		// bufferData
+		gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+		var FSIZE = vertices.BYTES_PER_ELEMENT;
+		// attribute
+		var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+		// vertexAttribPointer
+		gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, FSIZE * 4, 0);
+		// enableVertexAttribArray
+		gl.enableVertexAttribArray(a_Position);
+
+		// 设置 a_Texcoord 的缓冲对象
+		var a_Texcoord = gl.getAttribLocation(gl.program, 'a_Texcoord');
+		gl.vertexAttribPointer(a_Texcoord, 2, gl.FLOAT, false, FSIZE * 4, FSIZE * 2);
+		gl.enableVertexAttribArray(a_Texcoord);
+		return n;
+	}
+	function initTexture(gl, n) {
+		var texture = gl.createTexture();
+		var u_Sampler = gl.getUniformLocation(gl.program, 'u_Sampler');
+		var image = new Image();
+		image.onload = function() {
+			loadTexture(gl, n, texture, u_Sampler, image);
+		}
+		image.src = './img/head.png';
+		return true;
+	}
+	function loadTexture(gl, n, texture, u_Sampler, image) {
+		// y反转
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+		// 0纹理对象
+		gl.activeTexture(gl.TEXTURE0);
+		// 绑定纹理对象
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+		// 设置纹理参数
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+		// 设置纹理图像
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+		gl.uniform1i(u_Sampler, 0);
+		gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+	}
+</script>
+</html>

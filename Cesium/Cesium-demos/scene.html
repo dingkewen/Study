@@ -1,100 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Hello 3D Earth</title>
-    <script src="CesiumUnminified/Cesium.js"></script>
-    <style>
-        @import url(CesiumUnminified/Widgets/widgets.css);
+	<head>
+		<meta charset="UTF-8">
+		<title>Hello 3D Earth</title>
+		<script src="CesiumUnminified/Cesium.js"></script>
+		<style>
+			@import url(CesiumUnminified/Widgets/widgets.css);
         html, body, #cesiumContainer {
             width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
         }
 		.cesium-viewer-bottom{
 			display: none!important;
     </style>
-</head>
-<body>
-    <div id="cesiumContainer"></div>
-  <script type="text/javascript">
-	  //设置默认视角
-	var china  = Cesium.Rectangle.fromDegrees(100.0,10.0,120.0,70.0);
-	Cesium.Camera.DEFAULT_VIEW_RECTANGLE = china;
-	
-	//获取地图层几何
-	
-  	var viewer  = new Cesium.Viewer("cesiumContainer",{
-		// scene3DOnly: true,
-		selectionIndicator: false,
-		baseLayerPicker: false,
-		geocoder: true,
-		CreditsDisplay : false,
-		animation :false,
-		timeline : false,
-		fullscreenButton :false,//全屏按钮
-		SceneMode : Cesium.SceneMode.SCENE2D  ,//设置场景模式
-		
-		//globe : true, //加载地球
-		// ImageryProvider : new Cesium.Ars({
-		// 	mapId : "mapbox.streets"
-		// })
-	});
-	
-	//图层加载
-	var imagesLayers = viewer.imageryLayers;
-	imagesLayers.addImageryProvider(
-		new Cesium.OpenStreetMapImageryProvider({
-			url : 'https://a.tile.openstreetmap.org/'
-		})
-	)
-	//完成之后回调处理
-	imagesLayers.layerAdded.addEventListener(function(){
-		console.log("图层加载完了啊")
-	})
-	
-	/**
-	 * 场景
-	 */
-	var SceneIns = viewer.scene ;
-	
+	</head>
+	<body>
+		<div id="cesiumContainer"></div>
 
-	//添加实体
-	var redBox = viewer.entities.add({
-	  name : 'Red box with black outline',
-	  position: Cesium.Cartesian3.fromDegrees(-107.0, 40.0, 300000.0),
-	  box : {
-		  
-	    dimensions : new Cesium.Cartesian3(400000.0, 300000.0, 500000.0),
-	    material : Cesium.Color.RED.withAlpha(0.5),
-	    outline : true,
-	    outlineColor : Cesium.Color.BLACK
-	  },
-	point : { //点
-		  pixelSize : 5,
-		  color : Cesium.Color.RED,
-		  outlineColor : Cesium.Color.WHITE,
-		  outlineWidth : 2
-	  },
-	  billboard : {
-		  show :true,
-		  image :"../path.png",
-		  pixelOffset:  new Cesium.Cartesian2(0,-9)
-	  }
-	});
-	
-	viewer.zoomTo(viewer.entities);
-	/**
-	 * 相机的基础使用
-	 */
-	//漫游到指定位置
-	viewer.camera.flyTo({
-		   destination: Cesium.Cartesian3.fromDegrees(-115.0, 37.0 ,15000.0),
-	})
-	
-	viewer.camera.moveEnd.addEventListener(function(){
-		console.log("相机移动结束",console.count());
-	
-	});
+		<script type="text/javascript">
+			//设置默认视角
+			var china = Cesium.Rectangle.fromDegrees(100.0, 10.0, 120.0, 70.0);
+			Cesium.Camera.DEFAULT_VIEW_RECTANGLE = china;
 
-  </script>
-</body>
+			//获取地图层几何
+
+			var viewer = new Cesium.Viewer("cesiumContainer", {
+				// scene3DOnly: true,
+				selectionIndicator: false,
+				baseLayerPicker: false,
+				geocoder: true,
+				CreditsDisplay: false,
+				animation: false,
+				timeline: false,
+				fullscreenButton: false, //全屏按钮
+				SceneMode: Cesium.SceneMode.SCENE2D, //设置场景模式
+
+				//globe : true, //加载地球
+				// ImageryProvider : new Cesium.Ars({
+				// 	mapId : "mapbox.streets"
+				// })
+			});
+
+			//图层加载(地图皮肤)
+			var imagesLayers = viewer.imageryLayers;
+			imagesLayers.addImageryProvider(
+				new Cesium.OpenStreetMapImageryProvider({
+					url: 'https://a.tile.openstreetmap.org/'
+				})
+			)
+			//完成之后回调处理
+			imagesLayers.layerAdded.addEventListener(function() {
+				console.log("图层加载完了啊")
+			})
+
+			/**
+			 * 场景
+			 */
+			var SceneIns = viewer.scene;
+			var entitiesIns = viewer.entities;
+
+			//添加实体
+			var redBox = entitiesIns.add({
+				name: 'Red box with black outline',
+				description: "<table><tr><td>123</td><td>456</td></tr></table>",
+				position: Cesium.Cartesian3.fromDegrees(-107.0, 40.0, 300000.0),
+				box: {
+
+					dimensions: new Cesium.Cartesian3(400000.0, 300000.0, 500000.0),
+					material: Cesium.Color.RED.withAlpha(0.5),
+					outline: true,
+					outlineColor: Cesium.Color.BLACK
+				},
+				point: { //点
+					name: "point",
+					pixelSize: 5,
+
+					color: Cesium.Color.RED,
+					outlineColor: Cesium.Color.WHITE,
+					outlineWidth: 2
+				}
+
+			});
+			var entity = entitiesIns.add({
+				id: "bill",
+				name: "billBoard",
+				description: "this is a billBoard",
+				position: Cesium.Cartesian3.fromDegrees(116.3, 39.9),
+				properties: {
+					gg: "ewq",
+					age:"18"
+				},
+				billboard: {
+					show: true,
+					image: "../path.png",
+					width: 100,
+					height: 100,
+					color: Cesium.Color.BLUE.withAlpha(0.3),
+					rotation: Cesium.Math.PI_OVER_FOUR,
+					horizontalOrigin: Cesium.HorizontalOrigin.CENTER, // default
+					verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+					// sizeInMeters : true
+					scaleByDistance: new Cesium.NearFarScalar(1.5e2, 2.0, 1.5e7, 0.5),
+
+				},
+				label: {
+					text: "this is a label",
+					style: Cesium.LabelStyle.FILL,
+					scale: 2,
+					backgroundColor: Cesium.Color.BISQUE,
+					fillColor: Cesium.Color.RED,
+					// eyeOffset : new Cesium.Cartesian3(1,0.8,0.6)
+				}
+			})
+			//椭圆
+			
+			entitiesIns.add({
+				name :"椭圆",
+				position :  Cesium.Cartesian3.fromDegrees(120.11, 39.9),
+				ellipse :{
+					semiMajorAxis : 300000.0,
+					semiMinorAxis : 250000.0,
+					extrudedHeight: 200000.0,
+				}
+			})
+			//属性展示
+			attrShow(entity, "billboard")
+
+			function attrShow(entity, name, datas) {
+				if (Cesium.defined(entity[name])) {
+					// entity.billboard.verticalOrigin = Cesium.VerticalOrigin.BOTTOM; 
+					// entity.label = undefined; 
+					// entity.billboard.distanceDisplayCondition = new Cesium.DistanceDisplayCondition(10.0, 20000.0);
+					// 计算经度和纬度（角度表示）
+					var cartographicPosition = Cesium.Cartographic.fromCartesian(entity.position.getValue(Cesium.JulianDate.now()));
+					var longitude = Cesium.Math.toDegrees(cartographicPosition.longitude);
+					var latitude = Cesium.Math.toDegrees(cartographicPosition.latitude);
+					// 修改描述信息 
+					var extAttr = entity.properties.getValue(new Cesium.Clock().currentTime);
+					var description = '<table class="cesium-infoBox-defaultTable cesium-infoBox-defaultTable-lighter"><tbody>' +
+						'<tr><th>' + "经度" + '</th><td>' + longitude.toFixed(5) + '</td></tr>' +
+						'<tr><th>' + "纬度" + '</th><td>' + latitude.toFixed(5) + '</td></tr>'
+						for (var key in extAttr){
+							description +=	'<tr><th>' + key + '</th><td>'+ extAttr[key] +'</td></tr>' 
+						}
+						
+						description += '</tbody></table>';
+					entity.description = description;
+				}
+			}
+			console.log(entity.properties.gg)
+			viewer.zoomTo(entitiesIns);
+		</script>
+	</body>
 </html>

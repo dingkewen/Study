@@ -52,4 +52,5 @@
 	//笛卡尔转平面
 	var cartesian2= Cesium.SceneTransforms.wgs84ToWindowCoordinates(viewer.scene,cartesian3)
 	
-	function pickL
+	
+	

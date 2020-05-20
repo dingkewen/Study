@@ -155,7 +155,7 @@
 			};
 			var handle = new Cesium.ScreenSpaceEventHandler(cvs);
 			handle.setInputAction(function(movement){
-				
+				  console.log(movement,11) //获取窗口平面的点坐标
 			},Cesium.ScreenSpaceEventType.LEFT_CLICK)
 			function getFlagByKeyCode(keyCode){
 				    switch ( keyCode )
@@ -191,6 +191,7 @@
 				        flags[flagName] = false;
 				    }
 			}
+			//
 			viewer.clock.onTick.addEventListener(function(){
 				
 				var cameraHeight = ellipsoid.cartesianToCartographic( g_camera.position ).height;

@@ -40,18 +40,7 @@
 				// })
 			});
 
-			//图层加载(地图皮肤)
-			var imagesLayers = viewer.imageryLayers;
-			imagesLayers.addImageryProvider(
-				new Cesium.OpenStreetMapImageryProvider({
-					url: 'https://a.tile.openstreetmap.org/'
-				})
-			)
-			//完成之后回调处理
-			imagesLayers.layerAdded.addEventListener(function() {
-				console.log("图层加载完了啊")
-			})
-
+			
 			/**
 			 * 场景
 			 */

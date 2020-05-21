@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+		包括配置viewer、加载数据、创建各种样式的几何体、使用3d tiles（三维模型切片）、控制相机、增加鼠标交互事件
+	     影像数据 imageryLayers
+	</title>
+	
+    <script src="CesiumUnminified/Cesium.js"></script>
+    <style>
+        @import url(CesiumUnminified/Widgets/widgets.css);
+        html, body, #cesiumContainer {
+            width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+        }
+		.cesium-viewer-bottom{
+			display: none!important;
+			}
+    </style>
+</head>
+<body>
+    <div id="cesiumContainer"></div>
+  <script type="text/javascript">
+	
+	
+	//获取地图层几何
+	
+  	var viewer  = new Cesium.Viewer("cesiumContainer",{
+		// scene3DOnly: true,
+		selectionIndicator: false,
+		baseLayerPicker: false,
+		geocoder: true,
+		CreditsDisplay : false,
+		animation :false,
+		timeline : false,
+		fullscreenButton :false,//全屏按钮
+		SceneMode : Cesium.SceneMode.SCENE2D  ,//设置场景模式
+		
+		//globe : true, //加载地球
+		// ImageryProvider : new Cesium.Ars({
+		// 	mapId : "mapbox.streets"
+		// })
+	});
+	
+	//图层加载
+	var imagesLayers = viewer.imageryLayers;
+
+	//图层加载(地图皮肤)
+	var imagesLayers = viewer.imageryLayers;
+    var openStreet = new Cesium.OpenStreetMapImageryProvider({
+			url : 'https://a.tile.openstreetmap.org/',
+			
+		})
+		
+	var esri = new Cesium.ArcGisMapServerImageryProvider({
+	    url : "https://nationalmap.gov.au/proxy/http://services.ga.gov.au/site_3/rest/services/Electricity_Infrastructure/MapServer"
+	});
+	
+	var bing = new Cesium.BingMapsImageryProvider({
+	    url : 'https://dev.virtualearth.net',
+	    key : 'get-yours-at-https://www.bingmapsportal.com/',
+	    mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS_ON_DEMAND,
+		
+	});
+	
+	var positron = new Cesium.UrlTemplateImageryProvider({
+	    url : 'https://rt3.map.gtimg.com/tile?z={z}&x={x}&y={reverseY}&styleid=2&version=297',
+	    credit : '腾讯地图'
+	});
+	
+	imagesLayers.addImageryProvider(positron)
+	
+	//加载完成之后回调处理
+	imagesLayers.layerAdded.addEventListener(function(){
+		console.log("图层加载完了啊")
+	})
+	//图层颜色调整
+	
+	
+	
+	
+	
+
+  </script>
+</body>
+</html>

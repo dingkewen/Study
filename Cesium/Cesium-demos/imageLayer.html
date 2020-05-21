@@ -1,86 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>
+	<meta charset="UTF-8">
+	<title>
 		包括配置viewer、加载数据、创建各种样式的几何体、使用3d tiles（三维模型切片）、控制相机、增加鼠标交互事件
-	     影像数据 imageryLayers
+		影像数据 imageryLayers
 	</title>
-	
-    <script src="CesiumUnminified/Cesium.js"></script>
-    <style>
-        @import url(CesiumUnminified/Widgets/widgets.css);
-        html, body, #cesiumContainer {
-            width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
-        }
-		.cesium-viewer-bottom{
-			display: none!important;
-			}
-    </style>
+
+	<script src="CesiumUnminified/Cesium.js"></script>
+	<style>
+		@import url(CesiumUnminified/Widgets/widgets.css);
+
+		html,
+		body,
+		#cesiumContainer {
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+		}
+
+		.cesium-viewer-bottom {
+			display: none !important;
+		}
+		#toolbar td{
+			color:#fff
+		}
+	</style>
 </head>
+
 <body>
-    <div id="cesiumContainer"></div>
-  <script type="text/javascript">
-	
-	
-	//获取地图层几何
-	
-  	var viewer  = new Cesium.Viewer("cesiumContainer",{
-		// scene3DOnly: true,
-		selectionIndicator: false,
-		baseLayerPicker: false,
-		geocoder: true,
-		CreditsDisplay : false,
-		animation :false,
-		timeline : false,
-		fullscreenButton :false,//全屏按钮
-		SceneMode : Cesium.SceneMode.SCENE2D  ,//设置场景模式
-		
-		//globe : true, //加载地球
-		// ImageryProvider : new Cesium.Ars({
-		// 	mapId : "mapbox.streets"
-		// })
-	});
-	
-	//图层加载
-	var imagesLayers = viewer.imageryLayers;
+	<div id="cesiumContainer"></div>
 
-	//图层加载(地图皮肤)
-	var imagesLayers = viewer.imageryLayers;
-    var openStreet = new Cesium.OpenStreetMapImageryProvider({
-			url : 'https://a.tile.openstreetmap.org/',
-			
+	<div id="toolbar" style="position: absolute;top:15px;left: 15px;z-index: 5;">
+		<table>
+			<tbody>
+				<tr>
+					<td>亮度</td>
+					<td>
+						<input type="range" min="0" max="3" step="0.02"
+							data-bind="value: brightness, valueUpdate: 'input'">
+						<input type="text" size="5" data-bind="value: brightness">
+					</td>
+				</tr>
+				<tr>
+					<td>对比度</td>
+					<td>
+						<input type="range" min="0" max="3" step="0.02"
+							data-bind="value: contrast, valueUpdate: 'input'">
+						<input type="text" size="5" data-bind="value: contrast">
+					</td>
+				</tr>
+				<tr>
+					<td>色调</td>
+					<td>
+						<input type="range" min="0" max="3" step="0.02" data-bind="value: hue, valueUpdate: 'input'">
+						<input type="text" size="5" data-bind="value: hue">
+					</td>
+				</tr>
+				<tr>
+					<td>饱和度</td>
+					<td>
+						<input type="range" min="0" max="3" step="0.02"
+							data-bind="value: saturation, valueUpdate: 'input'">
+						<input type="text" size="5" data-bind="value: saturation">
+					</td>
+				</tr>
+				<tr>
+					<td>伽马</td>
+					</td>
+					<td>
+						<input type="range" min="0" max="3" step="0.02" data-bind="value: gamma, valueUpdate: 'input'">
+						<input type="text" size="5" data-bind="value: gamma">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<script type="text/javascript">
+
+
+		//获取地图层几何
+
+		var viewer = new Cesium.Viewer("cesiumContainer", {
+			// scene3DOnly: true,
+			selectionIndicator: false,
+			baseLayerPicker: false,
+			geocoder: true,
+			CreditsDisplay: false,
+			animation: false,
+			timeline: false,
+			fullscreenButton: false,//全屏按钮
+			SceneMode: Cesium.SceneMode.SCENE2D,//设置场景模式
+
+			//globe : true, //加载地球
+			// ImageryProvider : new Cesium.Ars({
+			// 	mapId : "mapbox.streets"
+			// })
+		});
+
+		//图层加载
+		var imageryLayers = viewer.imageryLayers;
+
+		//图层加载(地图皮肤)
+	
+		var openStreet = new Cesium.OpenStreetMapImageryProvider({
+			url: 'https://a.tile.openstreetmap.org/',
+
 		})
-		
-	var esri = new Cesium.ArcGisMapServerImageryProvider({
-	    url : "https://nationalmap.gov.au/proxy/http://services.ga.gov.au/site_3/rest/services/Electricity_Infrastructure/MapServer"
-	});
-	
-	var bing = new Cesium.BingMapsImageryProvider({
-	    url : 'https://dev.virtualearth.net',
-	    key : 'get-yours-at-https://www.bingmapsportal.com/',
-	    mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS_ON_DEMAND,
-		
-	});
-	
-	var positron = new Cesium.UrlTemplateImageryProvider({
-	    url : 'https://rt3.map.gtimg.com/tile?z={z}&x={x}&y={reverseY}&styleid=2&version=297',
-	    credit : '腾讯地图'
-	});
-	
-	imagesLayers.addImageryProvider(positron)
-	
-	//加载完成之后回调处理
-	imagesLayers.layerAdded.addEventListener(function(){
-		console.log("图层加载完了啊")
-	})
-	//图层颜色调整
-	
-	
-	
-	
-	
 
-  </script>
+		var esri = new Cesium.ArcGisMapServerImageryProvider({
+			url: "https://nationalmap.gov.au/proxy/http://services.ga.gov.au/site_3/rest/services/Electricity_Infrastructure/MapServer"
+		});
+
+		var bing = new Cesium.BingMapsImageryProvider({
+			url: 'https://dev.virtualearth.net',
+			key: 'get-yours-at-https://www.bingmapsportal.com/',
+			mapStyle: Cesium.BingMapsStyle.AERIAL_WITH_LABELS_ON_DEMAND,
+
+		});
+		//加载自定义的影像图层数据 这里是腾讯地图
+		var positron = new Cesium.UrlTemplateImageryProvider({
+			url: 'https://rt3.map.gtimg.com/tile?z={z}&x={x}&y={reverseY}&styleid=2&version=297',
+			credit: '腾讯地图'
+		});
+
+		imageryLayers.addImageryProvider(positron)
+
+		//加载完成之后回调处理
+		imageryLayers.layerAdded.addEventListener(function () {
+			console.log("图层加载完了啊")
+		})
+		//图层颜色调整
+		//imagesLayer对象 可以对饱和度 对比度等参数调整 提供这些属性接口
+		var viewModel = {
+			// alpha : 0, //alpha混合值
+			brightness: 0, //亮度
+			contrast: 0, // 对比度
+			hue: 0,       //色调
+			saturation: 0,//饱和度
+			gamma: 0 // 伽马
+		}
+		Cesium.knockout.track(viewModel); //绑定参数
+		// 数据与dom绑定
+		var toolbar = document.getElementById("toolbar");
+		Cesium.knockout.applyBindings(viewModel, toolbar);
+		function subscribeLayerParameter(name) {
+			Cesium.knockout
+				.getObservable(viewModel, name)
+				.subscribe(function (newValue) {
+					if (imageryLayers.length > 0) {
+						var layer = imageryLayers.get(0);
+						layer[name] = newValue;
+					}
+				});
+		}
+		subscribeLayerParameter("brightness");
+		subscribeLayerParameter("contrast");
+		subscribeLayerParameter("hue");
+		subscribeLayerParameter("saturation");
+		subscribeLayerParameter("gamma");
+
+		// Make the viewModel react to base layer changes.
+		function updateViewModel() {
+			if (imageryLayers.length > 0) {
+				var layer = imageryLayers.get(0);
+				viewModel.brightness = layer.brightness;
+				viewModel.contrast = layer.contrast;
+				viewModel.hue = layer.hue;
+				viewModel.saturation = layer.saturation;
+				viewModel.gamma = layer.gamma;
+			}
+		}
+		imageryLayers.layerAdded.addEventListener(updateViewModel);
+		imageryLayers.layerRemoved.addEventListener(updateViewModel);
+		imageryLayers.layerMoved.addEventListener(updateViewModel);
+		updateViewModel();
+	</script>
 </body>
+
 </html>

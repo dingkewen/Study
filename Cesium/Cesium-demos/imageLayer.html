@@ -141,6 +141,7 @@
 				viewModel: {
 
 					handler: function (val, oldVal) {
+						debugger
 						this.viewModel = val;
 						if (imageryLayers.length > 0) {
 							var layer = imageryLayers.get(0);
@@ -159,9 +160,6 @@
 		})
  	new Vue({
 			el: "#app",
-			beforeCreate(){
-					
-			},
 			data : {
 				childLabels: [
 					{

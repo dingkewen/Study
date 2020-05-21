@@ -9,6 +9,7 @@
 	</title>
 
 	<script src="CesiumUnminified/Cesium.js"></script>
+	
 	<style>
 		@import url(CesiumUnminified/Widgets/widgets.css);
 
@@ -94,7 +95,7 @@
 			timeline: false,
 			fullscreenButton: false,//全屏按钮
 			SceneMode: Cesium.SceneMode.SCENE2D,//设置场景模式
-
+			terrainProvider : Cesium.createWorldTerrain()
 			//globe : true, //加载地球
 			// ImageryProvider : new Cesium.Ars({
 			// 	mapId : "mapbox.streets"
@@ -134,7 +135,8 @@
 			console.log("图层加载完了啊")
 		})
 		//图层颜色调整
-		//imagesLayer对象 可以对饱和度 对比度等参数调整 提供这些属性接口
+		//imagesLayer对象 可以对饱和度 对比度等参数调整 提供这些属性接口  
+		//使用vue 等mvc可代替
 		var viewModel = {
 			// alpha : 0, //alpha混合值
 			brightness: 0, //亮度
@@ -163,7 +165,7 @@
 		subscribeLayerParameter("saturation");
 		subscribeLayerParameter("gamma");
 
-		// Make the viewModel react to base layer changes.
+		// 回调时间实时更新
 		function updateViewModel() {
 			if (imageryLayers.length > 0) {
 				var layer = imageryLayers.get(0);

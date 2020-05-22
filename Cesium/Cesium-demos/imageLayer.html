@@ -145,7 +145,7 @@
 						this.viewModel = val;
 						if (imageryLayers.length > 0) {
 							var layer = imageryLayers.get(0);
-							layer[this.name] = this.viewModel[this.name];
+							layer[this.name] = Number(this.viewModel[this.name]);
 						}
 					},
 					deep: true,

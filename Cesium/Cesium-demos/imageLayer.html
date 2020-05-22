@@ -154,13 +154,6 @@
                             layer[this.name] = Number(this.viewModel[this.name]);
                         }
 
-					handler: function (val, oldVal) {
-						debugger
-						this.viewModel = val;
-						if (imageryLayers.length > 0) {
-							var layer = imageryLayers.get(0);
-							layer[this.name] = Number(this.viewModel[this.name]);
-						}
 					},
 					deep: true,
 					immediate: true

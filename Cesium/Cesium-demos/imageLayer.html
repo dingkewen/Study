@@ -2,143 +2,157 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<title>
-		包括配置viewer、加载数据、创建各种样式的几何体、使用3d tiles（三维模型切片）、控制相机、增加鼠标交互事件
-		影像数据 imageryLayers
-	</title>
+    <meta charset="UTF-8">
+    <title>
+        包括配置viewer、加载数据、创建各种样式的几何体、使用3d tiles（三维模型切片）、控制相机、增加鼠标交互事件 影像数据 imageryLayers
+    </title>
 
-	<script src="js/vue.min.js"></script>
-	<script src="CesiumUnminified/Cesium.js"></script>
-	<style>
-		@import url(CesiumUnminified/Widgets/widgets.css);
-
-		html,
-		body,
-		#cesiumContainer {
-			width: 100%;
-			height: 100%;
-			margin: 0;
-			padding: 0;
-			overflow: hidden;
-		}
-
-		.cesium-viewer-bottom {
-			display: none !important;
-		}
-
-		#toolbar td {
-			color: #fff
-		}
-	</style>
+    <script src="js/vue.min.js"></script>
+    <script src="CesiumUnminified/Cesium.js"></script>
+    <style>
+        @import url(CesiumUnminified/Widgets/widgets.css);
+        html,
+        body,
+        #cesiumContainer {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .cesium-viewer-bottom {
+            display: none !important;
+        }
+        
+        #toolbar td {
+            color: #fff
+        }
+    </style>
 </head>
 
 <body>
-	<div id="cesiumContainer">
-		
-	</div>
-	<div id="app">
-		<change-style :labels="childLabels"></change-style>
-	</div>
-	<script type="text/x-template" id="toolbar-temp">
+    <div id="cesiumContainer">
 
-		<div id="toolbar" style="position: absolute;top:15px;left: 15px;z-index: 5;">
-			<table>
-				<tbody v-if="labels.length > 0">
-					<tr v-for="item in labels" :key="item.name">
-						<td>{{item.label}}</td>
-						<td>
-							<input type="range" min="0" max="3" step="0.02" v-model="viewModel[item.name]" @change="setName(item.name)">
-								
-							<input type="text" size="5" v-model="viewModel[item.name]" @change="setName(item.name)">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</script>
-	
-	<script type="text/javascript">
+    </div>
+    <div id="app">
+        <change-style :labels="childLabels"></change-style>
+    </div>
+    <script type="text/x-template" id="toolbar-temp">
 
+        <div id="toolbar" style="position: absolute;top:15px;left: 15px;z-index: 5;">
+            <table>
+                <tbody v-if="labels.length > 0">
+                    <tr v-for="item in labels" :key="item.name">
+                        <td>{{item.label}}</td>
+                        <td>
+                            <input type="range" min="0" max="3" step="0.02" v-model.lazy="viewModel[item.name]" @change="setName(item.name)">
 
-		// //获取地图层几何
+                            <input type="text" size="5" v-model.lazy="viewModel[item.name]" @change="setName(item.name)">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </script>
 
-		var viewer = new Cesium.Viewer("cesiumContainer", {
-			// scene3DOnly: true,
-			selectionIndicator: false,
-			baseLayerPicker: false,
-			geocoder: true,
-			CreditsDisplay: false,
-			animation: false,
-			timeline: false,
-			fullscreenButton: false,//全屏按钮
-			SceneMode: Cesium.SceneMode.SCENE2D,//设置场景模式
-			terrainProvider: Cesium.createWorldTerrain()
-			//globe : true, //加载地球
-			// ImageryProvider : new Cesium.Ars({
-			// 	mapId : "mapbox.streets"
-			// })
-		});
+    <script type="text/javascript">
+        // //获取地图层几何
 
-		//图层加载
-		var imageryLayers = viewer.imageryLayers;
+        var viewer = new Cesium.Viewer("cesiumContainer", {
+            // scene3DOnly: true,
+            selectionIndicator: false,
+            baseLayerPicker: false,
+            geocoder: true,
+            CreditsDisplay: false,
+            animation: false,
+            timeline: false,
+            fullscreenButton: false, //全屏按钮
+            SceneMode: Cesium.SceneMode.SCENE2D, //设置场景模式
+            terrainProvider: Cesium.createWorldTerrain()
+                //globe : true, //加载地球
+                // ImageryProvider : new Cesium.Ars({
+                // 	mapId : "mapbox.streets"
+                // })
+        });
 
-		//图层加载(地图皮肤)
+        //图层加载
+        var imageryLayers = viewer.imageryLayers;
 
-		var openStreet = new Cesium.OpenStreetMapImageryProvider({
-			url: 'https://a.tile.openstreetmap.org/',
+        //图层加载(地图皮肤)
 
-		})
+        var openStreet = new Cesium.OpenStreetMapImageryProvider({
+            url: 'https://a.tile.openstreetmap.org/',
 
-		var esri = new Cesium.ArcGisMapServerImageryProvider({
-			url: "https://nationalmap.gov.au/proxy/http://services.ga.gov.au/site_3/rest/services/Electricity_Infrastructure/MapServer"
-		});
+        })
 
-		var bing = new Cesium.BingMapsImageryProvider({
-			url: 'https://dev.virtualearth.net',
-			key: 'get-yours-at-https://www.bingmapsportal.com/',
-			mapStyle: Cesium.BingMapsStyle.AERIAL_WITH_LABELS_ON_DEMAND,
+        var esri = new Cesium.ArcGisMapServerImageryProvider({
+            url: "https://nationalmap.gov.au/proxy/http://services.ga.gov.au/site_3/rest/services/Electricity_Infrastructure/MapServer"
+        });
 
-		});
-		//加载自定义的影像图层数据 这里是腾讯地图
-		var positron = new Cesium.UrlTemplateImageryProvider({
-			url: 'https://rt3.map.gtimg.com/tile?z={z}&x={x}&y={reverseY}&styleid=2&version=297',
-			credit: '腾讯地图'
-		});
+        var bing = new Cesium.BingMapsImageryProvider({
+            url: 'https://dev.virtualearth.net',
+            key: 'get-yours-at-https://www.bingmapsportal.com/',
+            mapStyle: Cesium.BingMapsStyle.AERIAL_WITH_LABELS_ON_DEMAND,
 
-		imageryLayers.addImageryProvider(positron)
+        });
+        //加载自定义的影像图层数据 这里是腾讯地图
+        var positron = new Cesium.UrlTemplateImageryProvider({
+            url: 'https://rt3.map.gtimg.com/tile?z={z}&x={x}&y={reverseY}&styleid=2&version=297',
+            credit: '腾讯地图'
+        });
 
-		//加载完成之后回调处理
-		imageryLayers.layerAdded.addEventListener(function () {
-			console.log("图层加载完了啊")
-		})
-		//图层颜色调整
-		//imagesLayer对象 可以对饱和度 对比度等参数调整 提供这些属性接口  
-		//使用vue 等mvc可代替
-		Vue.component("change-style", {
-			template: "#toolbar-temp",
-			props : {
-				labels: Array
-			},
-			data() {
-				return {
-					viewModel: {
-						brightness: 0, //亮度
-						contrast: 0, // 对比度
-						hue: 0,       //色调
-						saturation: 0,//饱和度
-						gamma: 0 // 伽马
-					},
-					name: ""
-				}
-			},
-			methods: {
-				setName(name) {
-					this.name = name;
-				}
-			},
-			watch: {
-				viewModel: {
+        imageryLayers.addImageryProvider(positron)
+
+        //加载完成之后回调处理
+        imageryLayers.layerAdded.addEventListener(function() {
+                console.log("图层加载完了啊")
+            })
+            //图层颜色调整
+            //imagesLayer对象 可以对饱和度 对比度等参数调整 提供这些属性接口  
+            //使用vue 等mvc可代替
+        Vue.component("change-style", {
+            template: "#toolbar-temp",
+            props: {
+                labels: Array
+            },
+            data() {
+                return {
+                    viewModel: {
+                        brightness: 0, //亮度
+                        contrast: 0, // 对比度
+                        hue: 0, //色调
+                        saturation: 0, //饱和度
+                        gamma: 0 // 伽马
+                    },
+                    name: ""
+                }
+            },
+            methods: {
+                setName(name) {
+                    this.name = name;
+                },
+                update() {
+                    let viewModel = this.viewModel;
+                    if (imageryLayers.length > 0) {
+                        var layer = imageryLayers.get(0);
+                        for (let key in viewModel) {
+                            viewModel[key] = layer[key]
+                        }
+                    }
+                }
+            },
+            watch: {
+                viewModel: {
+
+                    handler: function(val, oldVal) {
+
+                        this.viewModel = val;
+                        if (this.name == "") return
+                        if (imageryLayers.length > 0) {
+                            var layer = imageryLayers.get(0);
+                            layer[this.name] = Number(this.viewModel[this.name]);
+                        }
 
 					handler: function (val, oldVal) {
 						debugger
@@ -152,43 +166,41 @@
 					immediate: true
 				}
 
-			},
-			mounted() {
-				
-		
-			}
-		})
- 	new Vue({
-			el: "#app",
-			data : {
-				childLabels: [
-					{
-						label: "亮度",
-						name: "brightness"
-					},
-					{
-						label: "对比度",
-						name: "contrast"
-					},
-					{
-						label: "色调",
-						name: "hue"
-					},
-					{
-						label: "饱和度",
-						name: "saturation"
-					},
-					{
-						label: "伽马",
-						name: "gamma"
-					}
-				]
-			}
-			
-		})
+            },
+            mounted() {
+                let update = this.update;
+                imageryLayers.layerAdded.addEventListener(update);
+                imageryLayers.layerRemoved.addEventListener(update);
+                imageryLayers.layerMoved.addEventListener(update);
+                update()
 
-	
-	
-	</script>
+            }
+        })
+
+
+        new Vue({
+            el: "#app",
+            data: {
+                childLabels: [{
+                    label: "亮度",
+                    name: "brightness"
+                }, {
+                    label: "对比度",
+                    name: "contrast"
+                }, {
+                    label: "色调",
+                    name: "hue"
+                }, {
+                    label: "饱和度",
+                    name: "saturation"
+                }, {
+                    label: "伽马",
+                    name: "gamma"
+                }]
+            }
+
+        })
+    </script>
 </body>
+
 </html>

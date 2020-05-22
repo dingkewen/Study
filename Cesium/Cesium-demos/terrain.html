@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>包括配置viewer、加载数据、创建各种样式的几何体、使用3d tiles（三维模型切片）、控制相机、增加鼠标交互事件</title>
+    <script src="CesiumUnminified/Cesium.js"></script>
+    <style>
+        @import url(CesiumUnminified/Widgets/widgets.css);
+        html, body, #cesiumContainer {
+            width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+        }
+		.cesium-viewer-bottom{
+			display: none!important;
+    </style>
+</head>
+<body>
+    <div id="cesiumContainer"></div>
+  <script type="text/javascript">
+	  //设置默认视角
+	var china  = Cesium.Rectangle.fromDegrees(100.0,10.0,120.0,70.0);
+	Cesium.Camera.DEFAULT_VIEW_RECTANGLE = china;
+	
+	//获取地图层几何
+	
+  	var viewer  = new Cesium.Viewer("cesiumContainer",{
+		// scene3DOnly: true,
+		selectionIndicator: false,
+		baseLayerPicker: false,
+		geocoder: true,
+		CreditsDisplay : false,
+		animation :false,
+		timeline : false,
+		fullscreenButton :false,//全屏按钮
+		SceneMode : Cesium.SceneMode.SCENE2D  ,//设置场景模式
+		
+		//globe : true, //加载地球
+		// ImageryProvider : new Cesium.Ars({
+		// 	mapId : "mapbox.streets"
+		// })
+	});
+	
+	//图层加载
+	var imagesLayers = viewer.imageryLayers;
+	imagesLayers.addImageryProvider(
+		new Cesium.OpenStreetMapImageryProvider({
+			url : 'https://a.tile.openstreetmap.org/'
+		})
+	)
+	//完成之后回调处理
+	imagesLayers.layerAdded.addEventListener(function(){
+		console.log("图层加载完了啊")
+	})
+	
+	/**
+	 * 场景
+	 */
+	var SceneIns = viewer.scene ;
+	
+
+	//添加实体
+	var redBox = viewer.entities.add({
+	  name : 'Red box with black outline',
+	  position: Cesium.Cartesian3.fromDegrees(-107.0, 40.0, 300000.0),
+	  box : {
+		  
+	    dimensions : new Cesium.Cartesian3(400000.0, 300000.0, 500000.0),
+	    material : Cesium.Color.RED.withAlpha(0.5),
+	    outline : true,
+	    outlineColor : Cesium.Color.BLACK
+	  },
+	point : { //点
+		  pixelSize : 5,
+		  color : Cesium.Color.RED,
+		  outlineColor : Cesium.Color.WHITE,
+		  outlineWidth : 2
+	  },
+	  billboard : {
+		  show :true,
+		  image :"../path.png",
+		  pixelOffset:  new Cesium.Cartesian2(0,-9)
+	  }
+	});
+	
+	viewer.zoomTo(viewer.entities);
+	/**
+	 * 相机的基础使用
+	 */
+	//漫游到指定位置
+	viewer.camera.flyTo({
+		   destination: Cesium.Cartesian3.fromDegrees(-115.0, 37.0 ,15000.0),
+	})
+	
+	viewer.camera.moveEnd.addEventListener(function(){
+		console.log("相机移动结束",console.count());
+	
+	});
+
+  </script>
+</body>
+</html>

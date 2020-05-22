@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>增加鼠标交互事件</title>
+	<script src="CesiumUnminified/Cesium.js"></script>
+	<style>
+		@import url(CesiumUnminified/Widgets/widgets.css);
+
+		html,
+		body,
+		#cesiumContainer {
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+		}
+
+		.cesium-viewer-bottom {
+			display: none !important;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="cesiumContainer"></div>
+	<script type="text/javascript">
+		//设置默认视角
+		var china = Cesium.Rectangle.fromDegrees(100.0, 10.0, 120.0, 70.0);
+		Cesium.Camera.DEFAULT_VIEW_RECTANGLE = china;
+
+		//获取地图层几何
+
+		var viewer = new Cesium.Viewer("cesiumContainer", {
+			// scene3DOnly: true,
+			selectionIndicator: false,
+			baseLayerPicker: false,
+			geocoder: true,
+			CreditsDisplay: false,
+			animation: false,
+			timeline: false,
+			fullscreenButton: false,//全屏按钮
+			SceneMode: Cesium.SceneMode.SCENE2D,//设置场景模式
+
+			//globe : true, //加载地球
+			// ImageryProvider : new Cesium.Ars({
+			// 	mapId : "mapbox.streets"
+			// })
+		});
+
+		//图层加载
+		var imagesLayers = viewer.imageryLayers;
+		imagesLayers.addImageryProvider(
+			new Cesium.OpenStreetMapImageryProvider({
+				url: 'https://a.tile.openstreetmap.org/'
+			})
+		)
+		//完成之后回调处理
+		imagesLayers.layerAdded.addEventListener(function () {
+			console.log("图层加载完了啊")
+		})
+
+		/**
+		 * 场景
+		 */
+		var SceneIns = viewer.scene;
+		var entities = viewer.entities;
+		var entityBox = entities.add({
+			name: "this is a  image",
+			position: Cesium.Cartesian3.fromDegrees(118.23, 39.11, 100000),
+			box: {
+				dimensions: new Cesium.Cartesian3(30000, 40000, 100000),
+				outline: true,
+				// fill:false,
+				material: Cesium.Color.BLUE.withAlpha(0.5)
+			}
+		})
+		var entity = entities.add({
+			// name :"this is a  image",
+			// position : Cesium.Cartesian3.fromDegrees(118.23,39.11,100000),
+			label: {
+				show: false,
+				font: "14px sans-serif",
+				showBackground: true,
+				horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+				verticalOrigin: Cesium.VerticalOrigin.TOP,
+				pixelOffset: new Cesium.Cartesian2(20, 0),
+				scaleByDistance: new Cesium.NearFarScalar(1.5e2, 2.0, 1.5e7, 0.5)
+			}
+		})
+		viewer.zoomTo(entities);
+		//拾取交互
+		/*
+		 Scene.pick : 返回窗口坐标对应的图元的第一个对象。
+		 Scene.drillPick :返回窗口坐标对应的所有对象列表。
+		 Globe.pick : 返回一条射线和地形的相交位置点。
+		*/
+		let csv = SceneIns.canvas;
+		let handle = new Cesium.ScreenSpaceEventHandler(csv);
+		//测试是不是可以同时绑定多个事件
+		handle.setInputAction(function (movement) {
+			//回调处理 回调返回的窗口位置
+			var pickObj = SceneIns.pick(movement.position);
+			//射线与地面的交点
+            var ray = viewer.camera.getPickRay(movement.position);
+			var intersection = new Cesium.Globe().pick(ray, SceneIns);
+			console.log("交点",intersection)
+			
+			if (Cesium.defined(pickObj) && pickObj.id === entityBox) {
+			
+				entityBox.box.material = Cesium.Color.YELLOW;
+			} else {
+			
+				entityBox.box.material = Cesium.Color.BLUE.withAlpha(0.5);
+			}
+
+
+		}, Cesium.ScreenSpaceEventType.LEFT_DOWN);
+
+		//获取经纬度
+		handle.setInputAction(function (movement) {
+			//回调处理
+			var cartesian = viewer.camera.pickEllipsoid(movement.endPosition, SceneIns.globe.ellipsoid);
+			if (Cesium.defined(cartesian)) {
+				//cartesian坐标转为 cartographic弧度坐标
+				var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+				var lang = Cesium.Math.toDegrees(cartographic.longitude).toFixed(2);
+				var lat = Cesium.Math.toDegrees(cartographic.latitude).toFixed(2);
+				entity.position = cartesian;
+				entity.label.text = `lan : ${lang} \n lat : ${lat} `;
+				entity.label.show = true;
+			} else {
+				entity.label.show = false;
+				throw ("出现错误--98")
+			}
+
+		}, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
+
+		//drillDown
+		//Globel.pick
+
+	</script>
+</body>
+
+</html>

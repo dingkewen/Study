@@ -1,237 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<title>包括配置viewer、加载数据、创建各种样式的几何体、使用3d tiles（三维模型切片）、控制相机、增加鼠标交互事件</title>
-		<script src="CesiumUnminified/Cesium.js"></script>
-		<style>
-			@import url(CesiumUnminified/Widgets/widgets.css);
-        html, body, #cesiumContainer {
-            width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
-        }
-		.cesium-viewer-bottom{
-			display: none!important;
-    </style>
-	</head>
-	<body>
-		<div id="cesiumContainer"></div>
-		<script type="text/javascript">
-			//设置默认视角
-			var china = Cesium.Rectangle.fromDegrees(100.0, 10.0, 120.0, 70.0);
-			Cesium.Camera.DEFAULT_VIEW_RECTANGLE = china;
-			
-			//获取地图层几何
 
-			var viewer = new Cesium.Viewer("cesiumContainer", {
-				// scene3DOnly: true,
-				selectionIndicator: false,
-				baseLayerPicker: false,
-				geocoder: true,
-				CreditsDisplay: false,
-				animation: false,
-				timeline: false,
-				fullscreenButton: false, //全屏按钮
-				//SceneMode: Cesium.SceneMode.SCENE2D, //设置场景模式
-				 terrainProvider: Cesium.createWorldTerrain()
-			
-				//globe : true, //加载地球
-				// ImageryProvider : new Cesium.Ars({
-				// 	mapId : "mapbox.streets"
-				// })
-			});
-			//开启光照
-			viewer.scene.globe.enableLighting = false;
-			// //图层加载
-			// var imagesLayers = viewer.imageryLayers;
-			// imagesLayers.addImageryProvider(
-			// 	new Cesium.OpenStreetMapImageryProvider({
-			// 		url: 'https://a.tile.openstreetmap.org/'
-			// 	})
-			// )
-			// //完成之后回调处理
-			// imagesLayers.layerAdded.addEventListener(function() {
-			// 	console.log("图层加载完了啊")
+<head>
+	<meta charset="UTF-8">
+	<title>包括配置viewer、加载数据、创建各种样式的几何体、使用3d tiles（三维模型切片）、控制相机、增加鼠标交互事件</title>
+	<script src="CesiumUnminified/Cesium.js"></script>
+	<style>
+		@import url(CesiumUnminified/Widgets/widgets.css);
+
+		html,
+		body,
+		#cesiumContainer {
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+		}
+
+		.cesium-viewer-bottom {
+			display: none !important;
+	</style>
+</head>
+
+<body>
+	<div id="cesiumContainer"></div>
+	<script type="text/javascript">
+		//设置默认视角
+		var china = Cesium.Rectangle.fromDegrees(100.0, 10.0, 120.0, 70.0);
+		Cesium.Camera.DEFAULT_VIEW_RECTANGLE = china;
+
+		//获取地图层几何
+
+		var viewer = new Cesium.Viewer("cesiumContainer", {
+			// scene3DOnly: true,
+			selectionIndicator: false,
+			baseLayerPicker: false,
+			geocoder: true,
+			CreditsDisplay: false,
+			animation: false,
+			timeline: false,
+			fullscreenButton: false, //全屏按钮
+			//SceneMode: Cesium.SceneMode.SCENE2D, //设置场景模式
+			terrainProvider: Cesium.createWorldTerrain()
+
+			//globe : true, //加载地球
+			// ImageryProvider : new Cesium.Ars({
+			// 	mapId : "mapbox.streets"
 			// })
+		});
+		//开启光照
+		viewer.scene.globe.enableLighting = false;
+		// //图层加载
+		// var imagesLayers = viewer.imageryLayers;
+		// imagesLayers.addImageryProvider(
+		// 	new Cesium.OpenStreetMapImageryProvider({
+		// 		url: 'https://a.tile.openstreetmap.org/'
+		// 	})
+		// )
+		// //完成之后回调处理
+		// imagesLayers.layerAdded.addEventListener(function() {
+		// 	console.log("图层加载完了啊")
+		// })
 
-			// //添加实体
-			// var redBox = viewer.entities.add({
-			// 	name: 'Red box with black outline',
-			// 	position: Cesium.Cartesian3.fromDegrees(-107.0, 40.0, 300000.0),
-			// 	box: {
+		// //添加实体
+		// var redBox = viewer.entities.add({
+		// 	name: 'Red box with black outline',
+		// 	position: Cesium.Cartesian3.fromDegrees(-107.0, 40.0, 300000.0),
+		// 	box: {
 
-			// 		dimensions: new Cesium.Cartesian3(400000.0, 300000.0, 500000.0),
-			// 		material: Cesium.Color.RED.withAlpha(0.5),
-			// 		outline: true,
-			// 		outlineColor: Cesium.Color.BLACK
-			// 	},
-			// 	point: { //点
-			// 		pixelSize: 5,
-			// 		color: Cesium.Color.RED,
-			// 		outlineColor: Cesium.Color.WHITE,
-			// 		outlineWidth: 2
-			// 	},
-			// 	billboard: {
-			// 		show: true,
-			// 		image: "../path.png",
-			// 		pixelOffset: new Cesium.Cartesian2(0, -9)
-			// 	}
-			// });
+		// 		dimensions: new Cesium.Cartesian3(400000.0, 300000.0, 500000.0),
+		// 		material: Cesium.Color.RED.withAlpha(0.5),
+		// 		outline: true,
+		// 		outlineColor: Cesium.Color.BLACK
+		// 	},
+		// 	point: { //点
+		// 		pixelSize: 5,
+		// 		color: Cesium.Color.RED,
+		// 		outlineColor: Cesium.Color.WHITE,
+		// 		outlineWidth: 2
+		// 	},
+		// 	billboard: {
+		// 		show: true,
+		// 		image: "../path.png",
+		// 		pixelOffset: new Cesium.Cartesian2(0, -9)
+		// 	}
+		// });
 
-			// viewer.zoomTo(viewer.entities);
-			/**
-			* 相机的基础使用 决定因素 位置 方向 和 投影视锥
-			* Camera.setView(options) : 立即设置相机位置和朝向。
-				Camera.zoomIn(amount) : 沿着相机方向移动相机。
-				Camera.zoomOut(amount) : 沿着相机方向远离
-				Camera.flyTo(options) : 创建从一个位置到另一个位置的相机飞行动画。
-				Camera.lookAt(target, offset) : 依据目标偏移来设置相机位置和朝向。
-				Camera.move(direction, amount) : 沿着direction方向移动相机。
-				Camera.rotate(axis, angle) : 绕着任意轴旋转相机。
-		
-			* 
-			 * var camera = new Cesium.Camera(scene);
-				camera.position = new Cesium.Cartesian3();
-				camera.direction = Cesium.Cartesian3.negate(Cesium.Cartesian3.UNIT_Z, new Cesium.Cartesian3());
-				camera.up = Cesium.Cartesian3.clone(Cesium.Cartesian3.UNIT_Y);
-				camera.frustum.fov = Cesium.Math.PI_OVER_THREE;
-				camera.frustum.near = 1.0;
-				camera.frustum.far = 2.0;
-			 */
-			//设置相机的位置
-			var initialPosition = new Cesium.Cartesian3.fromDegrees(116.3, 39.9, 100000);
-			var initialOrientation = new Cesium.HeadingPitchRoll.fromDegrees(0,-90,0);
-			var homeCameraView = {
-			    destination : initialPosition,
-			    orientation : {
-			        heading : initialOrientation.heading,
-			        pitch : initialOrientation.pitch,
-			        roll : initialOrientation.roll
-			    }
-			};
-			
-			var g_camera = viewer.camera;
-			g_camera.setView(homeCameraView);
-			
-			setTimeout(function(){
-				//漫游到指定位置
-				g_camera.flyTo({
-					destination: Cesium.Cartesian3.fromDegrees(116, 33, 15000.0),
-					orientation : {
-						heading : Cesium.Math.toRadians( -15 ),
-						pitch : Cesium.Math.toRadians( -65 ),
-						roll : Cesium.Math.toRadians( 0 )
-					},
-					duration : 3,
-					endTransform : Cesium.Matrix4.IDENTITY,
-					complete : function(){
-						Console("飞行结束了")
-					}	
-				})
-			},1000)
-			//自定义控制camera
-			var scene = viewer.scene;
-			var ellipsoid = scene.globe.ellipsoid;
-			var cvs = viewer.canvas;
-			cvs.setAttribute("tagIndex",0);//可获取焦点
-			cvs.onclick = function(){
-				this.focus();
+		// viewer.zoomTo(viewer.entities);
+		/**
+		* 相机的基础使用 决定因素 位置 方向 和 投影视锥
+		* Camera.setView(options) : 立即设置相机位置和朝向。
+			Camera.zoomIn(amount) : 沿着相机方向移动相机。
+			Camera.zoomOut(amount) : 沿着相机方向远离
+			Camera.flyTo(options) : 创建从一个位置到另一个位置的相机飞行动画。
+			Camera.lookAt(target, offset) : 依据目标偏移来设置相机位置和朝向。
+			Camera.move(direction, amount) : 沿着direction方向移动相机。
+			Camera.rotate(axis, angle) : 绕着任意轴旋转相机。
+	
+		* 
+		 * var camera = new Cesium.Camera(scene);
+			camera.position = new Cesium.Cartesian3();
+			camera.direction = Cesium.Cartesian3.negate(Cesium.Cartesian3.UNIT_Z, new Cesium.Cartesian3());
+			camera.up = Cesium.Cartesian3.clone(Cesium.Cartesian3.UNIT_Y);
+			camera.frustum.fov = Cesium.Math.PI_OVER_THREE;
+			camera.frustum.near = 1.0;
+			camera.frustum.far = 2.0;
+		 */
+		//设置相机的位置
+		var initialPosition = new Cesium.Cartesian3.fromDegrees(116.3, 39.9, 100000);
+		var initialOrientation = new Cesium.HeadingPitchRoll.fromDegrees(0, -90, 0);
+		var homeCameraView = {
+			destination: initialPosition,
+			orientation: {
+				heading: initialOrientation.heading,
+				pitch: initialOrientation.pitch,
+				roll: initialOrientation.roll
 			}
-			//取消原来的事件
-			for(let key in scene.screenSpaceCameraController){
-				if(typeof scene.screenSpaceCameraController[key] == "boolean" && scene.screenSpaceCameraController[key]){
-					scene.screenSpaceCameraController[key] = false;
+		};
+
+		var g_camera = viewer.camera;
+		g_camera.setView(homeCameraView);
+
+		setTimeout(function () {
+			//漫游到指定位置
+			g_camera.flyTo({
+				destination: Cesium.Cartesian3.fromDegrees(116, 33, 15000.0),
+				orientation: {
+					heading: Cesium.Math.toRadians(-15),
+					pitch: Cesium.Math.toRadians(-65),
+					roll: Cesium.Math.toRadians(0)
+				},
+				duration: 3,
+				endTransform: Cesium.Matrix4.IDENTITY,
+				complete: function () {
+					Console("飞行结束了")
 				}
-			}
-			var startMousePosition;
-			var mousePosition;
-			var flags = {
-			  looking: false,
-			  moveForward: false,
-			  moveBackward: false,
-			  moveUp: false,
-			  moveDown: false,
-			  moveLeft: false,
-			  moveRight: false,
-			};
-			var handle = new Cesium.ScreenSpaceEventHandler(cvs);
-			handle.setInputAction(function(movement){
-				  console.log(movement,11) //获取窗口平面的点坐标
-			},Cesium.ScreenSpaceEventType.LEFT_CLICK)
-			function getFlagByKeyCode(keyCode){
-				    switch ( keyCode )
-				    {
-				        case 'W'.charCodeAt( 0 ) : //向下平移镜头
-				            return 'moveDown';
-				        case 'S'.charCodeAt( 0 ) : //向上平移镜头
-				            return 'moveUp';
-				        case 'A'.charCodeAt( 0 ) : //向右平移镜头
-				            return 'moveRight';
-				        case 'D'.charCodeAt( 0 ) : //向左平移镜头
-				            return 'moveLeft';
-				        case 'Q'.charCodeAt( 0 ) : //向右旋转镜头
-				            return 'rotateRight';
-				        case 'E'.charCodeAt( 0 ) : //向左旋转镜头
-				            return 'rotateLeft';
-				        default :
-				            return undefined;
-				    }
-			};
-			
-			document.onkeydown = function(e){
-				 var flagName = getFlagByKeyCode( e.keyCode );
-				    if ( typeof flagName !== 'undefined' )
-				    {
-				        flags[flagName] = true;
-				    }
-			}
-			document.onkeyup = function(e){
-				 var flagName = getFlagByKeyCode( e.keyCode );
-				    if ( typeof flagName !== 'undefined' )
-				    {
-				        flags[flagName] = false;
-				    }
-			}
-			//
-			viewer.clock.onTick.addEventListener(function(){
-				
-				var cameraHeight = ellipsoid.cartesianToCartographic( g_camera.position ).height;
-				    var moveRate = cameraHeight / 100.0;
-				 
-				    if ( flags.rotateLeft )
-				    {
-				        g_camera.rotateLeft( 0.01 );
-				    }
-				    if ( flags.rotateRight )
-				    {
-				        g_camera.rotateRight( 0.01 );
-				    }
-				    if ( flags.moveUp )
-				    {
-				        g_camera.moveUp( moveRate );
-				    }
-				    if ( flags.moveDown )
-				    {
-				        g_camera.moveDown( moveRate );
-				    }
-				    if ( flags.moveLeft )
-				    {
-				        g_camera.moveLeft( moveRate );
-				    }
-				    if ( flags.moveRight )
-				    {
-				        g_camera.moveRight( moveRate );
-				    }
 			})
-			//相机移动之后回调事件
-			g_camera.moveEnd.addEventListener(function() {
-				console.log("相机移动结束", console.count());
-
-			});
-			// Console(g_camera.cameraToWorldCoordinates(Cesium.Cartesian.fromDegrees (1,1,1,1000))) 
-			Console(g_camera.pitch,g_camera.positionCartographic );
-			function Console(...str){
-				console.log(str.join(","));
+		}, 1000)
+		//自定义控制camera
+		var scene = viewer.scene;
+		var ellipsoid = scene.globe.ellipsoid;
+		var cvs = viewer.canvas;
+		cvs.setAttribute("tagIndex", 0);//可获取焦点
+		cvs.onclick = function () {
+			this.focus();
+		}
+		//取消原来的事件
+		for (let key in scene.screenSpaceCameraController) {
+			if (typeof scene.screenSpaceCameraController[key] == "boolean" && scene.screenSpaceCameraController[key]) {
+				scene.screenSpaceCameraController[key] = false;
 			}
-		</script>
-	</body>
+		}
+		var startMousePosition;
+		var mousePosition;
+		var flags = {
+			looking: false,
+			moveForward: false,
+			moveBackward: false,
+			moveUp: false,
+			moveDown: false,
+			moveLeft: false,
+			moveRight: false,
+		};
+		var handle = new Cesium.ScreenSpaceEventHandler(cvs);
+		handle.setInputAction(function (movement) {
+			console.log(movement, 11) //获取窗口平面的点坐标
+		}, Cesium.ScreenSpaceEventType.LEFT_CLICK)
+		function getFlagByKeyCode(keyCode) {
+			switch (keyCode) {
+				case 'W'.charCodeAt(0): //向下平移镜头
+					return 'moveDown';
+				case 'S'.charCodeAt(0): //向上平移镜头
+					return 'moveUp';
+				case 'A'.charCodeAt(0): //向右平移镜头
+					return 'moveRight';
+				case 'D'.charCodeAt(0): //向左平移镜头
+					return 'moveLeft';
+				case 'Q'.charCodeAt(0): //向右旋转镜头
+					return 'rotateRight';
+				case 'E'.charCodeAt(0): //向左旋转镜头
+					return 'rotateLeft';
+				default:
+					return undefined;
+			}
+		};
+
+		document.onkeydown = function (e) {
+			var flagName = getFlagByKeyCode(e.keyCode);
+			if (typeof flagName !== 'undefined') {
+				flags[flagName] = true;
+			}
+		}
+		document.onkeyup = function (e) {
+			var flagName = getFlagByKeyCode(e.keyCode);
+			if (typeof flagName !== 'undefined') {
+				flags[flagName] = false;
+			}
+		}
+		//
+		viewer.clock.onTick.addEventListener(function () {
+
+			var cameraHeight = ellipsoid.cartesianToCartographic(g_camera.position).height;
+			var moveRate = cameraHeight / 100.0;
+
+			if (flags.rotateLeft) {
+				g_camera.rotateLeft(0.01);
+			}
+			if (flags.rotateRight) {
+				g_camera.rotateRight(0.01);
+			}
+			if (flags.moveUp) {
+				g_camera.moveUp(moveRate);
+			}
+			if (flags.moveDown) {
+				g_camera.moveDown(moveRate);
+			}
+			if (flags.moveLeft) {
+				g_camera.moveLeft(moveRate);
+			}
+			if (flags.moveRight) {
+				g_camera.moveRight(moveRate);
+			}
+		})
+		//相机移动之后回调事件
+		g_camera.moveEnd.addEventListener(function () {
+			console.log("相机移动结束", console.count());
+
+		});
+		// Console(g_camera.cameraToWorldCoordinates(Cesium.Cartesian.fromDegrees (1,1,1,1000))) 
+		Console(g_camera.pitch, g_camera.positionCartographic);
+		function Console(...str) {
+			console.log(str.join(","));
+		}
+	</script>
+</body>
+
 </html>

@@ -103,16 +103,16 @@
 		handle.setInputAction(function (movement) {
 			//回调处理 回调返回的窗口位置
 			var pickObj = SceneIns.pick(movement.position);
-			//射线与地面的交点
-            var ray = viewer.camera.getPickRay(movement.position);
+			//射线与地面的交点 //Globel.pick
+			var ray = viewer.camera.getPickRay(movement.position);
 			var intersection = new Cesium.Globe().pick(ray, SceneIns);
-			console.log("交点",intersection)
-			
+			console.log("交点", intersection)
+
 			if (Cesium.defined(pickObj) && pickObj.id === entityBox) {
-			
+
 				entityBox.box.material = Cesium.Color.YELLOW;
 			} else {
-			
+
 				entityBox.box.material = Cesium.Color.BLUE.withAlpha(0.5);
 			}
 
@@ -138,8 +138,51 @@
 
 		}, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 
-		//drillDown
-		//Globel.pick
+		//drillDown 后续
+
+		/**
+	 * 返回对应窗口位置最上面一个Entity 如果该位置没有对象那么返回undefined
+	 * @param {Cartesian2} windowPosition 窗口坐标
+	 * @returns {Entity} 返回值
+	 */
+		function pickEntity(viewer, windowPosition) {
+			var picked = viewer.scene.pick(windowPosition);
+			if (defined(picked)) {
+				var id = Cesium.defaultValue(picked.id, picked.primitive.id);
+				if (id instanceof Cesium.Entity) {
+					return id;
+				}
+			}
+			return undefined;
+		};
+
+		/**
+		 *返回对应窗口位置所有Entity的列表 如果该位置没有对象那么返回undefined
+		 * 返回值按可视化顺序从前到后存储在数组里
+		 *
+		 * @param {Cartesian2} windowPosition 窗口位置
+		 * @returns {Entity[]}  
+		 */
+		function drillPickEntities(viewer, windowPosition) {
+			var i;
+			var entity;
+			var picked;
+			var pickedPrimitives = viewer.scene.drillPick(windowPosition);
+			var length = pickedPrimitives.length;
+			var result = [];
+			var hash = {};
+
+			for (i = 0; i < length; i++) {
+				picked = pickedPrimitives[i];
+				entity = Cesium.defaultValue(picked.id, picked.primitive.id);
+				if (entity instanceof Cesium.Entity &&
+					!Cesium.defined(hash[entity.id])) {
+					result.push(entity);
+					hash[entity.id] = true;
+				}
+			}
+			return result;
+		};
 
 	</script>
 </body>

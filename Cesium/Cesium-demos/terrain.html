@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>包括配置viewer、加载数据、创建各种样式的几何体、使用3d tiles（三维模型切片）、控制相机、增加鼠标交互事件</title>
+    <title>加载地形--简单级</title></title>
     <script src="CesiumUnminified/Cesium.js"></script>
     <style>
         @import url(CesiumUnminified/Widgets/widgets.css);
@@ -11,6 +11,7 @@
         }
 		.cesium-viewer-bottom{
 			display: none!important;
+		}
     </style>
 </head>
 <body>
@@ -20,10 +21,9 @@
 	var china  = Cesium.Rectangle.fromDegrees(100.0,10.0,120.0,70.0);
 	Cesium.Camera.DEFAULT_VIEW_RECTANGLE = china;
 	
-	//获取地图层几何
-	
+	//三维视图入口
   	var viewer  = new Cesium.Viewer("cesiumContainer",{
-		// scene3DOnly: true,
+		scene3DOnly: true,
 		selectionIndicator: false,
 		baseLayerPicker: false,
 		geocoder: true,
@@ -31,26 +31,34 @@
 		animation :false,
 		timeline : false,
 		fullscreenButton :false,//全屏按钮
-		SceneMode : Cesium.SceneMode.SCENE2D  ,//设置场景模式
-		
 		//globe : true, //加载地球
 		// ImageryProvider : new Cesium.Ars({
 		// 	mapId : "mapbox.streets"
 		// })
 	});
 	
-	//图层加载
-	var imagesLayers = viewer.imageryLayers;
-	imagesLayers.addImageryProvider(
-		new Cesium.OpenStreetMapImageryProvider({
-			url : 'https://a.tile.openstreetmap.org/'
-		})
-	)
-	//完成之后回调处理
-	imagesLayers.layerAdded.addEventListener(function(){
-		console.log("图层加载完了啊")
-	})
-	
+	//图层影像加载
+	// var imagesLayers = viewer.imageryLayers;
+	// imagesLayers.addImageryProvider(
+	// 	new Cesium.OpenStreetMapImageryProvider({
+	// 		url : 'https://a.tile.openstreetmap.org/'
+	// 	})
+	// )
+	// //完成之后回调处理
+	// imagesLayers.layerAdded.addEventListener(function(){
+	// 	console.log("图层加载完了啊")
+	// })
+	//地形影像加载
+	var word = Cesium.createWorldTerrain({
+		requestWaterMask: true,
+		requestVertexNormals: true,
+	});
+	var bb =  new Cesium.CesiumTerrainProvider({
+        url : Cesium.IonResource.fromAssetId(3956),
+        requestVertexNormals : true
+    });
+	viewer.terrainProvider  = word;
+	viewer.scene.globe.depthTestAgainstTerrain = true; // 打开深度检测，地形以下不可见
 	/**
 	 * 场景
 	 */
@@ -74,26 +82,16 @@
 		  outlineColor : Cesium.Color.WHITE,
 		  outlineWidth : 2
 	  },
-	  billboard : {
-		  show :true,
-		  image :"../path.png",
-		  pixelOffset:  new Cesium.Cartesian2(0,-9)
-	  }
+	//   //广告牌
+	//   billboard : {
+	// 	  show :true,
+	// 	  image :"../path.png",
+	// 	  pixelOffset:  new Cesium.Cartesian2(0,-9)
+	//   }
 	});
 	
 	viewer.zoomTo(viewer.entities);
-	/**
-	 * 相机的基础使用
-	 */
-	//漫游到指定位置
-	viewer.camera.flyTo({
-		   destination: Cesium.Cartesian3.fromDegrees(-115.0, 37.0 ,15000.0),
-	})
 	
-	viewer.camera.moveEnd.addEventListener(function(){
-		console.log("相机移动结束",console.count());
-	
-	});
 
   </script>
 </body>

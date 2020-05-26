@@ -37,17 +37,6 @@
 		// })
 	});
 	
-	//图层影像加载
-	// var imagesLayers = viewer.imageryLayers;
-	// imagesLayers.addImageryProvider(
-	// 	new Cesium.OpenStreetMapImageryProvider({
-	// 		url : 'https://a.tile.openstreetmap.org/'
-	// 	})
-	// )
-	// //完成之后回调处理
-	// imagesLayers.layerAdded.addEventListener(function(){
-	// 	console.log("图层加载完了啊")
-	// })
 	//地形影像加载
 	var word = Cesium.createWorldTerrain({
 		requestWaterMask: true,
@@ -57,7 +46,11 @@
         url : Cesium.IonResource.fromAssetId(3956),
         requestVertexNormals : true
     });
-	viewer.terrainProvider  = word;
+	var vrTheWorldProvider = new Cesium.VRTheWorldTerrainProvider({
+		url: "http://www.vr-theworld.com/vr-theworld/tiles1.0.0/73/",
+		credit: "Terrain data courtesy VT MÄK"
+	});
+	viewer.terrainProvider  = vrTheWorldProvider;
 	viewer.scene.globe.depthTestAgainstTerrain = true; // 打开深度检测，地形以下不可见
 	/**
 	 * 场景

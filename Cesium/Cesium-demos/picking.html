@@ -103,6 +103,7 @@
 		handle.setInputAction(function (movement) {
 			//回调处理 回调返回的窗口位置
 			var pickObj = SceneIns.pick(movement.position);
+			
 			//射线与地面的交点 //Globel.pick
 			var ray = viewer.camera.getPickRay(movement.position);
 			var intersection = new Cesium.Globe().pick(ray, SceneIns);
